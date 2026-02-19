@@ -1,0 +1,31 @@
+int lightPin = 0;
+int latchPin = 11;
+int clockPin = 9;
+int dataPin = 12;
+
+int LEDs = 0;
+
+void setup() {
+  pinMode(latchPin, OUTPUT);
+  pinMode(dataPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+}
+
+void updateShiftRegister() {
+  digitalWrite(latchPin, LOW);
+  shiftOut(dataPin, clockPin, LSBFIRST, LEDs);
+  digitalWrite(latchPin, HIGH);
+}
+
+void loop() {
+  int reading = analogRead(lightPin);
+  int numLEDSLit = reading / 57;
+  if (numLEDSLit > 8) numLEDSLit = 8;
+  LEDs = 0; // no LEDs lit to start.
+  for (int i = 0; i < numLEDSLit; i++) {
+    LEDs = LEDs + (1 << i); // sets the i'th bit
+  }
+  updateShiftRegister();
+}
+
+
